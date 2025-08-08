@@ -9,6 +9,7 @@
 - `styles.css`：旧的分栏样式（当前简化版页面未使用）。
 - `scratch.html`：Scratch 在线编辑器快捷入口页（尝试内嵌 + 自动新标签打开）。
 - `scratch.js`：`scratch.html` 的脚本逻辑。
+- `ide.html` / `ide.css` / `ide.js`：在线 Python / C++ 代码编辑与运行（浏览器端）。
 
 ## 使用说明
 
@@ -35,6 +36,26 @@
 - 页面尝试以 iframe 方式加载 Scratch 官方编辑器：
   - 链接：[Scratch Editor](https://scratch.mit.edu/projects/editor/?tutorial=getStarted)
   - 出于安全策略（X-Frame-Options / CSP），官方站点通常不允许第三方网页内嵌。如果被阻止，页面会自动在浏览器新标签打开，同时页面内也提供显式按钮。
+
+### 3) 在线 IDE（ide.html）
+- Python：基于 Pyodide，在浏览器本地运行，无需服务器。
+- C++（重要）：
+  - 默认优先使用 Piston 公共实例（`https://emkc.org/api/v2/piston/execute`），无需密钥；若该服务在你的网络环境下不可达或受限，将回退至 Judge0（需要你手动配置 Endpoint）。
+  - 若看到“HTTP 401/403”等错误，说明公共服务限制或需要授权。请按下文“Judge0 可选配置”设置。
+
+Judge0 可选配置（当你准备好可用的 Judge0 服务时）：
+1. 打开 `ide.html`，按 F12 → Console。
+2. 执行：
+```js
+localStorage.setItem('JUDGE0_URL', 'https://<your-judge0>/submissions?base64_encoded=false&wait=true');
+// 若需要鉴权，请设置请求头（JSON 字符串）
+localStorage.setItem('JUDGE0_HEADERS', '{"X-Auth-Token":"<your-token>"}');
+```
+3. 刷新页面，再次运行 C++。
+
+说明：
+- C++ 语言 ID（Judge0）：54（GCC 9.x 常见配置）。
+- 在线沙箱稳定性受网络与配额影响；如需稳定可控，建议自建服务。
 
 ## 自定义与二次开发
 - 可在 `script.js` 中更改默认参数（如默认 `ra`、是否显示提交按钮等）。
